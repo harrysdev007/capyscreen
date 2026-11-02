@@ -1,3 +1,4 @@
+import { isDoge, dogeQuery } from './doge.js?v=38';
 // Memegle live sources: everything here runs in the browser against public APIs (no server).
 // Each adapter returns normalized items:
 // { id, source, kind: 'image'|'gif'|'template', title, body, image, thumb, width, height, url, site, path,
@@ -19,7 +20,7 @@ export const SOURCE_INFO = {
 // Instances whose full-text search is queried for image posts in any meme-like community.
 export const LEMMY_GLOBAL_HOSTS = ['lemmy.world', 'lemmy.ml', 'sh.itjust.works', 'lemmy.dbzer0.com', 'lemmy.blahaj.zone', 'sopuli.xyz', 'programming.dev'];
 const MEME_COMMUNITY_RE = /meme|humor|humour|shitpost|comic|funny|dank|_irl|irl$|joke|cursed|lmao|lol|wholesome|greentext|satire|parody|absurd|onehundredninetysix|^196|clevercomebacks|antiquememes|fakehistory|dumb|silly|chaotic|unix_surrealism|programmerhumor|tenforward|risa/i;
-export const DEFAULT_MASTODON_TAGS = ['memes', 'meme', 'dankmemes', 'shitpost', 'funny'];
+export const DEFAULT_MASTODON_TAGS = ['doge', 'cheems'];
 
 // name@instance, searched through lemmy.world (federated) unless the community's own instance is listed as host.
 export const DEFAULT_LEMMY_COMMUNITIES = [
@@ -31,7 +32,7 @@ export const DEFAULT_LEMMY_COMMUNITIES = [
   'tenforward@lemmy.world', 'risa@startrek.website', 'clevercomebacks@lemmy.world', 'animemes@ani.social', 'dach@feddit.org',
 ];
 const LEMMY_SELF_HOSTS = new Set(['lemmy.ml', 'sopuli.xyz', 'programming.dev', 'sh.itjust.works', 'lemmy.dbzer0.com', 'lemmy.blahaj.zone']);
-export const DEFAULT_REDDIT_SUBS = ['memes', 'dankmemes', 'me_irl', 'wholesomememes', 'ProgrammerHumor', 'AdviceAnimals', 'HistoryMemes', 'PrequelMemes'];
+export const DEFAULT_REDDIT_SUBS = ['doge', 'dogememes', 'dogelore', 'cheems'];
 
 const IMG_RE = /\.(jpe?g|png|gif|webp|avif)(\?|#|$)/i;
 const cache = new Map();
@@ -389,7 +390,7 @@ export async function fetchImgflip() {
       nsfw: false,
       tags: ['template'],
       rank: i + 1,
-    }));
+    })).filter(isDoge);
   });
 }
 
@@ -512,14 +513,14 @@ export function googleSuggest(q, { lang = 'en' } = {}) {
 
 /** Meme-flavoured Google suggestions: ask for "<q> meme" and show the real Google completions. */
 export async function memeSuggestions(q, opts) {
-  const base = q.trim();
+  const base = dogeQuery(q);
   if (!base) return [];
   const asked = /meme/i.test(base) ? base : `${base} meme`;
   const list = await googleSuggest(asked, opts);
   const out = [];
   for (const s of list) {
     const clean = s.replace(/\s+/g, ' ').trim();
-    if (!clean || clean.toLowerCase() === base.toLowerCase()) continue;
+    if (!isDoge({title:clean}) || clean.toLowerCase() === base.toLowerCase()) continue;
     out.push(clean);
   }
   return out.slice(0, 10);
@@ -547,6 +548,7 @@ export function createSession(q, opts, adapters) {
   const emit = () => { if (!session.done) session.elapsed = performance.now() - session.startedAt; for (const l of session.listeners) l(session); };
   const add = (source, items) => {
     for (const it of items) {
+      if (!isDoge(it)) continue;
       if (opts.safe && it.nsfw) continue;
       if (session.byId.has(it.id)) continue;
       session.byId.set(it.id, it);

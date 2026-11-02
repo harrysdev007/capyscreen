@@ -1,5 +1,13 @@
+# DogeScreen
+
+A Doge-focused meme screener with neutral graphite surfaces, amber accents and readable typography. Live discovery searches Lemmy, Reddit, Bluesky and Mastodon for Doge and Cheems content, alongside Imgflip templates. Tenor, Giphy and Imgur are supported with user-provided API keys. Results are filtered by Doge-related metadata or dedicated meme-community provenance; this is a text filter, not image recognition. Two locally bundled classic templates remain available while live sources load.
+
+Run `node tools/serve.cjs` and open http://127.0.0.1:8000. Search, template previews and a private browser collection are supported. DogeScreen uses its own browser storage namespace; existing Memedex data is retained separately.
+
+The notes below describe the original Memedex codebase, from which DogeScreen was adapted.
+
 <p align="center">
-  <img src="docs/memedex-banner-dark-3x1.png" alt="Memedex" width="100%">
+  <img src="assets/doge/dogescreen-logo-v1.png" alt="DogeScreen" width="240">
 </p>
 
 **Your meme discovery terminal.** Search public sources, explore templates, and build a private meme library in your browser.

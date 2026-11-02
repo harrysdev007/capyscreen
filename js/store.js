@@ -1,8 +1,8 @@
 // Memegle storage: bundled index (data/memes.json) + IndexedDB for uploads, edits and embeddings.
-const DB_NAME = 'memegle';
+const DB_NAME = 'dogescreen';
 const DB_VERSION = 1;
-const SETTINGS_KEY = 'memegle.settings';
-const HISTORY_KEY = 'memegle.history';
+const SETTINGS_KEY = 'dogescreen.settings';
+const HISTORY_KEY = 'dogescreen.history';
 
 export const DEFAULT_SETTINGS = {
   theme: 'dark',            // system | light | dark

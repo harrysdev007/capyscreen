@@ -3,26 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Memedex</title>
-  <meta name="description" content="Memedex. Your screener for meme discovery. Search across the internet, explore templates and build your collection.">
+  <title>DogeScreen — Such memes. Much wow.</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=38">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/dogescreen-32.png?v=38">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/dogescreen-192.png?v=38">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/dogescreen-180.png?v=38">
+  <link rel="manifest" href="site.webmanifest?v=38">
+  <meta property="og:title" content="DogeScreen — Such memes. Much wow.">
+  <meta property="og:image" content="assets/doge/dogescreen-logo-v1.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image" content="assets/doge/dogescreen-logo-v1.png">
+  <meta name="description" content="Such memes. Much wow. Discover and collect only Doge memes with DogeScreen.">
   <meta name="color-scheme" content="dark light">
-  <meta name="theme-color" content="#08090b">
-  <link rel="icon" type="image/x-icon" href="favicon.ico?v=32">
-  <link rel="icon" type="image/png" sizes="32x32" href="icons/memedex-logo-32.png?v=32">
-  <link rel="icon" type="image/png" sizes="64x64" href="icons/memedex-logo-64.png?v=32">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/memedex-logo-180.png?v=32">
+  <meta name="theme-color" content="#303034">
   <link rel="preload" href="assets/fonts/xn7_YHE41ni1AdIRqAuZuw1Bx9mbZk79FO_F.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="assets/fonts/fonts.css?v=32">
-  <link rel="stylesheet" href="css/memegle.css?v=32">
-  <link rel="stylesheet" href="css/memedex.css?v=32">
+  <link rel="stylesheet" href="assets/fonts/fonts.css?v=38">
+  <link rel="stylesheet" href="css/memegle.css?v=38">
+  <link rel="stylesheet" href="css/memedex.css?v=38">
   <script>
     // Apply saved theme before first paint to avoid a flash.
     try {
-      var s = JSON.parse(localStorage.getItem('memegle.settings') || '{}');
+      var s = JSON.parse(localStorage.getItem('dogescreen.settings') || '{}');
       if (s.theme === 'light' || s.theme === 'dark') document.documentElement.setAttribute('data-theme', s.theme);
     } catch (e) {}
   </script>
+  <link rel="stylesheet" href="css/dogescreen.css?v=38">
 </head>
 <body>
   <div id="terminal-chrome"></div>
@@ -32,7 +38,7 @@
   <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple class="hidden">
   <input id="lens-input" type="file" accept="image/*" class="hidden">
   <input id="import-input" type="file" accept="application/json" class="hidden">
-  <noscript><p style="padding:40px;text-align:center;font-family:var(--font)">Memedex needs JavaScript.</p></noscript>
-  <script type="module" src="js/app.js?v=32"></script>
+  <noscript><p style="padding:40px;text-align:center;font-family:var(--font)">DogeScreen needs JavaScript.</p></noscript>
+  <script type="module" src="js/app.js?v=38"></script>
 </body>
 </html>

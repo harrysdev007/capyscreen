@@ -1,74 +1,36 @@
 {
-  "version": 1,
-  "count": 4,
+  "version": 2,
+  "count": 2,
   "memes": [
     {
-      "id": "b_3d4844c643f3",
-      "path": "memes/classics/bugs_bunny_no.jpg",
-      "filename": "bugs_bunny_no.jpg",
-      "folder": "classics",
-      "width": 628,
-      "height": 628,
-      "description": "Close-up of Bugs Bunny with a smug, half-lidded expression on a pink background. Bottom-left text: NO.",
-      "text": "NO",
+      "id": "doge-classic",
+      "path": "assets/doge/classic-doge.jpg",
+      "filename": "Doge.jpg",
+      "folder": "Doge classics",
+      "width": 620,
+      "height": 620,
+      "description": "The original Doge. Such wow. Kabosu the Shiba Inu.",
       "tags": [
-        "bugs bunny",
-        "cartoon",
-        "reaction",
-        "no"
-      ],
-      "source": "bundled"
-    },
-    {
-      "id": "b_fc66b3c55431",
-      "path": "memes/classics/look_at_all_the_fucks.jpg",
-      "filename": "look_at_all_the_fucks.jpg",
-      "folder": "classics",
-      "width": 700,
-      "height": 525,
-      "description": "A woman in a blue dress spins with her arms outstretched in an alpine meadow full of yellow flowers, snow-covered mountains behind her. Still from The Sound of Music. Top text: Look at all. Bottom text: the fucks I do not give.",
-      "text": "Look at all the fucks I do not give",
-      "tags": [
-        "sound of music",
-        "movie",
-        "dgaf",
+        "doge",
+        "classic",
+        "wow",
         "reaction"
       ],
       "source": "bundled"
     },
     {
-      "id": "b_13f531a665c0",
-      "path": "memes/classics/miyazaki_tired.jpg",
-      "filename": "miyazaki_tired.jpg",
-      "folder": "classics",
-      "width": 700,
-      "height": 390,
-      "description": "An older man in a shirt and apron pushes his glasses up onto his forehead with both hands, eyes closed, a cigarette in his mouth, sitting at a cluttered desk. Still from the NHK documentary 10 Years with Hayao Miyazaki. Used to express exhaustion.",
-      "text": "NHK WORLD JAPAN 10 Years with Hayao Miyazaki",
+      "id": "doge-cheems",
+      "path": "assets/doge/buff-doge-cheems.png",
+      "filename": "Buff_Doge_vs_Cheems.png",
+      "folder": "Doge classics",
+      "width": 937,
+      "height": 720,
+      "description": "Buff Doge vs. Cheems comparison meme.",
       "tags": [
-        "miyazaki",
-        "tired",
-        "work",
-        "programming",
-        "exhausted"
-      ],
-      "source": "bundled"
-    },
-    {
-      "id": "b_36a90546e81c",
-      "path": "memes/classics/weird_knowledge_increased.jpg",
-      "filename": "weird_knowledge_increased.jpg",
-      "folder": "classics",
-      "width": 460,
-      "height": 332,
-      "description": "A wide-eyed white cat sits in front of a glowing green and blue cosmic vortex with sparkles. Caption: WEIRD KNOWLEDGE INCREASED.",
-      "text": "WEIRD KNOWLEDGE INCREASED",
-      "tags": [
-        "cat",
-        "cosmic",
-        "reaction",
-        "knowledge",
-        "animals"
+        "doge",
+        "cheems",
+        "buff",
+        "comparison"
       ],
       "source": "bundled"
     }

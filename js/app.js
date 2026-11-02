@@ -47,6 +47,7 @@ const sm = (svg, px = 16) => svg.replace('<svg', `<svg style="width:${px}px;heig
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const logoHtml = () => '<a class="logo" href="#/" aria-label="DogeScope home"><img class="mx-mark" src="icons/dogescope-64.png?v=39" alt="" width="40" height="40"><span>DOGE<span class="brand-light">SCOPE</span></span></a>';
+const chainBadge = () => '<span class="chain-badge"><img src="assets/sources/bnb-chain.svg" alt="" width="20" height="20"><span><strong>$DOGESCOPE</strong> is live on <strong>BNB Chain</strong></span><span class="chain-live-dot" aria-hidden="true"></span></span>';
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const fmtNum = (n) => (n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1) + 'k' : String(n || 0));
@@ -275,7 +276,8 @@ function pageHeader() {
       <div class="dex-sidebar-bottom"><a class="x-social" href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescope_fun</a><small>Such memes. Very Doge.</small></div>
     </aside>
     <div class="dex-metas"><a class="dex-header-social" href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescope_fun</a><a class="metas-title" href="#/">${sm(I.apps,14)} Dogeverse</a>${[['Such classics','doge'],['Much Cheems','cheems'],['Very strong','buff doge'],['To the moon','doge moon'],['Wow reactions','doge reaction']].map(([label,q]) => `<a href="${searchUrl({q,tab:'images'})}">${label}<span class="meta-arrow">↗</span></a>`).join('')}</div>`;
-  $('#terminal-footer').innerHTML = `<span class="dex-connection"><img src="icons/dogescope-32.png?v=39" alt="" width="20" height="20"> DOGESCOPE</span><a href="#/search?tab=library">${state.lib.length} collected</a><a href="#/settings#sources">Source settings</a><a href="#/search?tab=templates">Much templates</a><a href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,12)} @dogescope_fun</a><span class="dex-footer-end">Do Only Good Everyday.</span>`;
+  $('#terminal-chrome').insertAdjacentHTML('beforeend', `<div class="chain-announcement" aria-label="Token announcement">${chainBadge()}</div>`);
+  $('#terminal-footer').innerHTML = `<span class="dex-connection"><img src="icons/dogescope-32.png?v=39" alt="" width="20" height="20"> DOGESCOPE</span><a href="#/search?tab=library">${state.lib.length} collected</a><a href="#/settings#sources">Source settings</a><a href="#/search?tab=templates">Much templates</a><a href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,12)} @dogescope_fun</a>${chainBadge()}`;
 }
 
 async function renderHome(app) { return renderResults(app, () => state.route.name !== 'home'); }

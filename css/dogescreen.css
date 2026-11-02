@@ -63,3 +63,12 @@ body{background:#252528;font-size:15px;font-weight:600;color:#fffaf4}
 .dogescreen-banner{width:100%;aspect-ratio:3/1;margin:0 0 26px;overflow:hidden;border:1px solid #8f6d43;border-radius:12px;background:#303034}
 .dogescreen-banner img{display:block;width:100%;height:100%;object-fit:contain}
 @media(max-width:760px){.dogescreen-banner{margin-bottom:20px;border-radius:8px}}
+
+/* Token announcement stays readable alongside the site navigation. */
+.chain-announcement{position:fixed;top:52px;left:222px;right:0;z-index:34;min-height:36px;display:flex;align-items:center;justify-content:center;padding:5px 12px;background:linear-gradient(100deg,#3b3230,#52402a,#3b3230);border-bottom:1px solid #8c6937;box-sizing:border-box}
+.chain-badge{display:inline-flex;align-items:center;justify-content:center;gap:9px;color:#f3dfbd;font-size:13px;font-weight:600;line-height:1.4;white-space:nowrap}
+.chain-badge img{display:block;flex:none;object-fit:contain}.chain-badge strong{color:#ffcf78;font-weight:800}.chain-live-dot{width:6px;height:6px;border-radius:50%;background:#f0b90b;box-shadow:0 0 9px #f0b90b88;flex:none}
+#app{margin-top:112px}
+#terminal-footer>.chain-badge{margin-left:auto;font-size:12px}#terminal-footer>.chain-badge img{width:18px;height:18px}
+@media(max-width:1100px) and (min-width:761px){#terminal-footer>a[href*="settings"],#terminal-footer>a[href*="templates"]{display:none}#terminal-footer{gap:12px;padding:0 12px}}
+@media(max-width:760px){.chain-announcement{top:86px;left:0;min-height:34px}.chain-badge{font-size:12px;gap:7px}.chain-badge img{width:18px;height:18px}#app{margin-top:134px;margin-bottom:86px}#terminal-footer{height:70px;box-sizing:border-box;flex-wrap:wrap;justify-content:center;align-content:center;gap:5px 12px;padding:5px 8px}#terminal-footer>.chain-badge{order:-1;flex-basis:100%;margin:0;font-size:12px;min-height:25px}#terminal-footer>a[href*="settings"],#terminal-footer>a[href*="templates"]{display:none}#terminal-footer .dex-connection,#terminal-footer>a{font-size:11px}.side-panel{top:126px;bottom:78px}.toast{bottom:82px}}

@@ -1,12 +1,12 @@
 {
-  "name": "DogeScreen",
-  "short_name": "DogeScreen",
+  "name": "DogeScope",
+  "short_name": "DogeScope",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#303034",
   "theme_color": "#303034",
   "icons": [
-    {"src": "icons/dogescreen-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "icons/dogescreen-512.png", "sizes": "512x512", "type": "image/png"}
+    {"src": "icons/dogescope-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/dogescope-512.png", "sizes": "512x512", "type": "image/png"}
   ]
 }

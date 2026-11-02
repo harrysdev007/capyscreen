@@ -1,4 +1,4 @@
-import { isDoge, dogeQuery } from './doge.js?v=38';
+import { isDoge, dogeQuery } from './doge.js?v=39';
 // Memegle live sources: everything here runs in the browser against public APIs (no server).
 // Each adapter returns normalized items:
 // { id, source, kind: 'image'|'gif'|'template', title, body, image, thumb, width, height, url, site, path,

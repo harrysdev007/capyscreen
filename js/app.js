@@ -1,18 +1,18 @@
-import { isDoge, dogeQuery, DOGE_TEMPLATES } from './doge.js?v=38';
-// DogeScreen a meme discovery terminal across public sources,
+import { isDoge, dogeQuery, DOGE_TEMPLATES } from './doge.js?v=39';
+// DogeScope a meme discovery terminal across public sources,
 // plus a private "My memes" library in the browser. Vanilla JS SPA with hash routing.
 import {
   loadLibrary, loadSettings, saveSettings, loadHistory, pushHistory, clearHistory, saveMemeFields, resetOverride,
   deleteMeme, addUpload, getEmbedding, putEmbedding, exportLibrary, importLibrary, clearLibrary, libraryStats, DEFAULT_SETTINGS, idb,
-} from './store.js?v=38';
-import { buildIndex, search, suggestions as librarySuggestions, highlight, rankByVector, embeddingText, hashText, tokenize } from './search.js?v=38';
-import { describe, embed, getCaptioner, CAPTION_MODELS, hasWebGPU, isModelCached } from './ai.js?v=38';
+} from './store.js?v=39';
+import { buildIndex, search, suggestions as librarySuggestions, highlight, rankByVector, embeddingText, hashText, tokenize } from './search.js?v=39';
+import { describe, embed, getCaptioner, CAPTION_MODELS, hasWebGPU, isModelCached } from './ai.js?v=39';
 import {
   SOURCE_INFO, DEFAULT_LEMMY_COMMUNITIES, DEFAULT_REDDIT_SUBS, searchLemmy, searchLemmyGlobal, trendingLemmy, trendingMastodon, searchMastodon, searchReddit, fetchRedditPool,
   searchBluesky, trendingBluesky,
   searchImgflip, fetchImgflip, searchTenor, tenorAutocomplete, searchGiphy, searchImgur, knowledgePanel,
   memeSuggestions, spellCorrection, createSession, favicon, relevance,
-} from './sources.js?v=38';
+} from './sources.js?v=39';
 
 // ------------------------------------------------------------------ icons
 const I = {
@@ -46,7 +46,7 @@ const I = {
 const sm = (svg, px = 16) => svg.replace('<svg', `<svg style="width:${px}px;height:${px}px;vertical-align:-3px;fill:currentColor"`);
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const logoHtml = () => '<a class="logo" href="#/" aria-label="DogeScreen home"><img class="mx-mark" src="icons/dogescreen-64.png?v=38" alt="" width="40" height="40"><span>DOGE<span class="brand-light">SCREEN</span></span></a>';
+const logoHtml = () => '<a class="logo" href="#/" aria-label="DogeScope home"><img class="mx-mark" src="icons/dogescope-64.png?v=39" alt="" width="40" height="40"><span>DOGE<span class="brand-light">SCOPE</span></span></a>';
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const fmtNum = (n) => (n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1) + 'k' : String(n || 0));
@@ -159,7 +159,7 @@ function searchBox({ value = '', autofocus = false, compact = false } = {}) {
       <button type="button" class="sb-btn sb-clear ${value ? '' : 'hidden'}" title="Clear" aria-label="Clear">${I.clear}</button>
       <span class="sb-divider ${value ? '' : 'hidden'}"></span>
       <button type="button" class="sb-btn sb-mic" title="Search by voice" aria-label="Search by voice">${I.mic}</button>
-      <button type="button" class="sb-btn sb-lens" title="Search by image (DogeScreen Lens)" aria-label="Search by image">${I.lens}</button>
+      <button type="button" class="sb-btn sb-lens" title="Search by image (DogeScope Lens)" aria-label="Search by image">${I.lens}</button>
       ${compact ? `<button type="submit" class="sb-btn sb-go" title="Search" aria-label="Search"><span class="sb-icon" style="fill:var(--blue)">${I.search}</span></button>` : ''}
     </div>
     <div class="suggest" role="listbox"></div>`;
@@ -262,7 +262,7 @@ function pageHeader() {
     ['New memes', '#/search?sort=newest', I.history, route === 'search' && p.sort === 'newest'],
     ['Templates', '#/search?tab=templates', I.template, p.tab === 'templates' && route === 'search'],
   ];
-  $('#terminal-chrome').innerHTML = `<header class="dex-mobile-header"><button class="icon-btn" data-action="toggle-menu" title="Open navigation" aria-label="Open navigation">${I.apps}</button>${logoHtml()}<a class="dex-header-social" href="https://x.com/dogescreen_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescreen_fun</a></header>
+  $('#terminal-chrome').innerHTML = `<header class="dex-mobile-header"><button class="icon-btn" data-action="toggle-menu" title="Open navigation" aria-label="Open navigation">${I.apps}</button>${logoHtml()}<a class="dex-header-social" href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescope_fun</a></header>
     <button class="dex-backdrop" data-action="toggle-menu" aria-label="Close navigation"></button>
     <aside class="dex-sidebar" aria-label="Main navigation">
       <div class="dex-brand">${logoHtml()}</div>
@@ -272,10 +272,10 @@ function pageHeader() {
       <div class="dex-nav-divider"></div><span class="dex-section-label">SOURCES</span>
       <nav>${['lemmy','reddit','bluesky','mastodon','imgflip','tenor','giphy','imgur'].map((key,i)=>`<a class="dex-nav-link ${p.src.includes(key) ? 'active' : ''}" href="${searchUrl({tab:'all',src:key,q:p.q})}"><span class="dex-source-icon source-icon-${key}"><img src="assets/sources/${key}.png" alt="" width="22" height="22"></span>${esc(key === 'imgflip' ? 'Imgflip' : SOURCE_INFO[key].label)}${!enabled(key) ? '<span class="dex-key-label">OFF</span>' : ''}</a>`).join('')}</nav>
       <div class="dex-nav-divider"></div><nav><a class="dex-nav-link" href="#/tags">${sm(I.tag,17)} Tags</a><a class="dex-nav-link" href="#/folders">${sm(I.folder,17)} Folders</a><a class="dex-nav-link" href="#/settings">${sm(I.settings,17)} Settings</a></nav>
-      <div class="dex-sidebar-bottom"><a class="x-social" href="https://x.com/dogescreen_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescreen_fun</a><small>Such memes. Very Doge.</small></div>
+      <div class="dex-sidebar-bottom"><a class="x-social" href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescope_fun</a><small>Such memes. Very Doge.</small></div>
     </aside>
-    <div class="dex-metas"><a class="dex-header-social" href="https://x.com/dogescreen_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescreen_fun</a><a class="metas-title" href="#/">${sm(I.apps,14)} Dogeverse</a>${[['Such classics','doge'],['Much Cheems','cheems'],['Very strong','buff doge'],['To the moon','doge moon'],['Wow reactions','doge reaction']].map(([label,q]) => `<a href="${searchUrl({q,tab:'images'})}">${label}<span class="meta-arrow">↗</span></a>`).join('')}</div>`;
-  $('#terminal-footer').innerHTML = `<span class="dex-connection"><img src="icons/dogescreen-32.png?v=38" alt="" width="20" height="20"> DOGESCREEN</span><a href="#/search?tab=library">${state.lib.length} collected</a><a href="#/settings#sources">Source settings</a><a href="#/search?tab=templates">Much templates</a><a href="https://x.com/dogescreen_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,12)} @dogescreen_fun</a><span class="dex-footer-end">Do Only Good Everyday.</span>`;
+    <div class="dex-metas"><a class="dex-header-social" href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescope_fun</a><a class="metas-title" href="#/">${sm(I.apps,14)} Dogeverse</a>${[['Such classics','doge'],['Much Cheems','cheems'],['Very strong','buff doge'],['To the moon','doge moon'],['Wow reactions','doge reaction']].map(([label,q]) => `<a href="${searchUrl({q,tab:'images'})}">${label}<span class="meta-arrow">↗</span></a>`).join('')}</div>`;
+  $('#terminal-footer').innerHTML = `<span class="dex-connection"><img src="icons/dogescope-32.png?v=39" alt="" width="20" height="20"> DOGESCOPE</span><a href="#/search?tab=library">${state.lib.length} collected</a><a href="#/settings#sources">Source settings</a><a href="#/search?tab=templates">Much templates</a><a href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,12)} @dogescope_fun</a><span class="dex-footer-end">Do Only Good Everyday.</span>`;
 }
 
 async function renderHome(app) { return renderResults(app, () => state.route.name !== 'home'); }
@@ -371,7 +371,7 @@ async function renderResults(app, isStale) {
   const tabs = [['all', 'Discover', I.trend], ['images', 'Images', I.image], ['gifs', 'GIFs', I.gif], ['templates', 'Templates', I.template], ['library', 'My library', I.save]];
   app.innerHTML = `
     <header class="results-top">
-      <section class="doge-hero"><div class="doge-hero-copy"><span class="doge-kicker">THE INTERNET’S GOOD BOY, SCREENED.</span><h2>Such memes.<br>Much <em>wow.</em></h2><p>Your little corner of the Dogeverse.<br>Discover, save and share. Only Doge. Always.</p><a class="doge-cta" href="#/search?tab=images">Explore Doge memes <span>↗</span></a><div class="doge-hero-note"><span>Ð</span> Do Only Good Everyday.</div></div><div class="doge-hero-art"><span class="doge-orbit"></span><span class="doge-float float-one">wow.</span><span class="doge-float float-two">much golden</span><img src="assets/doge/dogescreen-logo-v1.png" alt="DogeScreen mascot" width="620" height="620"><span class="doge-sticker">100% DOGE<br><small>very approved ✓</small></span></div></section><div class="page-heading"><div><span class="eyebrow">YOUR DAILY DOSE OF DOGE</span><h1>${p.tab === 'library' ? 'My library' : p.q ? 'Search results' : 'The Doge feed'} <span class="live-label"><i></i> ${p.tab === 'library' ? 'LOCAL LIBRARY' : 'DOGE ONLY'}</span></h1><p>${p.q ? `Results for “${esc(p.q)}”` : 'Classic Doge, Cheems and much more. Such a good feed.'}</p></div><div class="workspace-actions"><a class="quiet-link" href="#/search?tab=library">${sm(I.save)} My library</a><a class="gbtn primary" href="#/search?tab=library">${sm(I.upload)} My collection</a></div></div>
+      <section class="doge-hero"><div class="doge-hero-copy"><span class="doge-kicker">THE INTERNET’S GOOD BOY, SCREENED.</span><h2>Such memes.<br>Much <em>wow.</em></h2><p>Your little corner of the Dogeverse.<br>Discover, save and share. Only Doge. Always.</p><a class="doge-cta" href="#/search?tab=images">Explore Doge memes <span>↗</span></a><div class="doge-hero-note"><span>Ð</span> Do Only Good Everyday.</div></div><div class="doge-hero-art"><span class="doge-orbit"></span><span class="doge-float float-one">wow.</span><span class="doge-float float-two">much golden</span><img src="assets/dogescope/dogescope-gradient-logo.png" alt="DogeScope mascot" width="620" height="620"><span class="doge-sticker">100% DOGE<br><small>very approved ✓</small></span></div></section><div class="page-heading"><div><span class="eyebrow">YOUR DAILY DOSE OF DOGE</span><h1>${p.tab === 'library' ? 'My library' : p.q ? 'Search results' : 'The Doge feed'} <span class="live-label"><i></i> ${p.tab === 'library' ? 'LOCAL LIBRARY' : 'DOGE ONLY'}</span></h1><p>${p.q ? `Results for “${esc(p.q)}”` : 'Classic Doge, Cheems and much more. Such a good feed.'}</p></div><div class="workspace-actions"><a class="quiet-link" href="#/search?tab=library">${sm(I.save)} My library</a><a class="gbtn primary" href="#/search?tab=library">${sm(I.upload)} My collection</a></div></div>
       <div class="command-row"><span class="command-prefix">${sm(I.search,18)}</span><div id="sb"></div><span class="command-hint"><kbd>/</kbd> Search</span></div>
       <nav class="tabs">
         ${tabs.map(([k, label, icon]) => `<a class="tab ${p.tab === k ? 'active' : ''}" href="${searchUrl({ ...state.route.params, tab: k, id: undefined, sel: undefined })}">${icon}${label}</a>`).join('')}
@@ -449,7 +449,7 @@ function emptyState(p, session) {
   const noSources = !Object.keys(SOURCE_INFO).some(enabled);
   const st = session ? Object.entries(session.status).filter(([k]) => !k.includes(':')) : [];
   const allFailed = st.length > 0 && st.every(([, v]) => v === 'error' || v === 'skipped');
-  if (allFailed) return `<div class="empty">DogeScreen could not reach any source.
+  if (allFailed) return `<div class="empty">DogeScope could not reach any source.
     <div style="margin-top:12px">The browser blocked or failed every request to the meme sources (lemmy.world, meme-api.com, api.imgflip.com, mastodon.social).
     This happens with strict content blockers, privacy modes or network filters. Allow those hosts or try another browser, then
     <a href="javascript:location.reload()">reload</a>.</div></div>`;
@@ -461,7 +461,7 @@ function emptyState(p, session) {
       ${p.tab === 'gifs' ? '<li>No curated Doge GIFs yet. Explore the Doge image templates.</li>' : ''}
       ${p.tab === 'library' ? '<li><a href="#/search?tab=library">My collections</a> or save results from the web with the Save button.</li>' : '<li>Try different or more general keywords, or the name of the meme template.</li>'}
       ${p.tab !== 'all' ? `<li>Look at <a href="${searchUrl({ ...state.route.params, tab: 'all' })}">all result types</a>.</li>` : ''}
-      <li>DogeScreen only shows Doge content. Try Doge, Cheems, buff or classic.</li>
+      <li>DogeScope only shows Doge content. Try Doge, Cheems, buff or classic.</li>
     </ul></div>`;
 }
 
@@ -788,7 +788,7 @@ function renderUpload(app) {
 }
 
 async function handleFiles(files) {
-  toast('DogeScreen accepts curated Doge content only. Save a Doge from the feed.'); return;
+  toast('DogeScope accepts curated Doge content only. Save a Doge from the feed.'); return;
 
   files = files.filter((f) => /^image\/(jpeg|png|webp|gif)$/.test(f.type));
   if (!files.length) { toast('No supported images (JPG, PNG, WEBP, GIF)'); return; }
@@ -951,13 +951,13 @@ async function renderSettings(app) {
 
       <h2 id="about">About</h2>
       <div class="card" style="line-height:1.6">
-        <p style="margin:0 0 8px"><b>DogeScreen</b> is your meme discovery screener: a meme-only search engine that runs entirely in your browser and is hosted as a static site.
+        <p style="margin:0 0 8px"><b>DogeScope</b> is your meme discovery screener: a meme-only search engine that runs entirely in your browser and is hosted as a static site.
         Use of third-party software and bundled media is described in the project license notices.</p>
         <p id="how" style="margin:0 0 8px"><b>How Search works.</b> Your query goes in parallel to the meme communities on Lemmy (searched through lemmy.world and the communities' own instances),
         to hot posts of meme subreddits via meme-api.com, to the Imgflip template list and, with your own keys, to Tenor, Giphy and Imgur. Results are merged, de-duplicated and ranked
         by title match, upvotes and freshness. Suggestions and "Did you mean" come live from Google's suggest service. The knowledge panel is the matching Wikipedia article.
         My memes are searched locally with BM25 or sentence embeddings.</p>
-        <p id="privacy" style="margin:0"><b>Privacy.</b> No analytics, no accounts, no DogeScreen server. Queries are sent to the sources above (and to Google's suggest endpoint if enabled).
+        <p id="privacy" style="margin:0"><b>Privacy.</b> No analytics, no accounts, no DogeScope server. Queries are sent to the sources above (and to Google's suggest endpoint if enabled).
         Uploads stay in this browser. See the project documentation for source and license notices.</p>
       </div>
     </main>`;
@@ -1154,7 +1154,7 @@ async function render(force = false) {
   terminalChrome();
   if (state.route.name !== 'search') state.limit = 0;
   const p = state.route.params;
-  document.title = 'DogeScreen';
+  document.title = 'DogeScope';
   const prevScroll = window.scrollY;
   // only the open panel changed: patch instead of re-rendering the whole page
   if (!force && state.route.name === 'search' && prev.name === 'search' && $('#results-body') && sameExcept(prev.params, p, ['id'])) {

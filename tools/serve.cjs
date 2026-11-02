@@ -1,4 +1,4 @@
-// Dependency-free local static server for DogeScreen.
+// Dependency-free local static server for DogeScope.
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -17,4 +17,4 @@ http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': types[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
     res.end(data);
   });
-}).listen(port, '127.0.0.1', () => console.log(`DogeScreen: http://127.0.0.1:${port}`));
+}).listen(port, '127.0.0.1', () => console.log(`DogeScope: http://127.0.0.1:${port}`));

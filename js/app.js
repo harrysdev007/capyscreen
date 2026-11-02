@@ -1,18 +1,18 @@
-import { isDoge, dogeQuery, DOGE_TEMPLATES } from './doge.js?v=39';
-// DogeScope a meme discovery terminal across public sources,
+import { isCapy, capyQuery, capySearchTerms, CAPY_SEEDS } from './capy.js?v=43';
+// CapyScreen a meme discovery terminal across public sources,
 // plus a private "My memes" library in the browser. Vanilla JS SPA with hash routing.
 import {
   loadLibrary, loadSettings, saveSettings, loadHistory, pushHistory, clearHistory, saveMemeFields, resetOverride,
   deleteMeme, addUpload, getEmbedding, putEmbedding, exportLibrary, importLibrary, clearLibrary, libraryStats, DEFAULT_SETTINGS, idb,
-} from './store.js?v=39';
-import { buildIndex, search, suggestions as librarySuggestions, highlight, rankByVector, embeddingText, hashText, tokenize } from './search.js?v=39';
-import { describe, embed, getCaptioner, CAPTION_MODELS, hasWebGPU, isModelCached } from './ai.js?v=39';
+} from './store.js?v=43';
+import { buildIndex, search, suggestions as librarySuggestions, highlight, rankByVector, embeddingText, hashText, tokenize } from './search.js?v=43';
+import { describe, embed, getCaptioner, CAPTION_MODELS, hasWebGPU, isModelCached } from './ai.js?v=43';
 import {
   SOURCE_INFO, DEFAULT_LEMMY_COMMUNITIES, DEFAULT_REDDIT_SUBS, searchLemmy, searchLemmyGlobal, trendingLemmy, trendingMastodon, searchMastodon, searchReddit, fetchRedditPool,
   searchBluesky, trendingBluesky,
   searchImgflip, fetchImgflip, searchTenor, tenorAutocomplete, searchGiphy, searchImgur, knowledgePanel,
   memeSuggestions, spellCorrection, createSession, favicon, relevance,
-} from './sources.js?v=39';
+} from './sources.js?v=43';
 
 // ------------------------------------------------------------------ icons
 const I = {
@@ -46,8 +46,7 @@ const I = {
 const sm = (svg, px = 16) => svg.replace('<svg', `<svg style="width:${px}px;height:${px}px;vertical-align:-3px;fill:currentColor"`);
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const logoHtml = () => '<a class="logo" href="#/" aria-label="DogeScope home"><img class="mx-mark" src="icons/dogescope-64.png?v=39" alt="" width="40" height="40"><span>DOGE<span class="brand-light">SCOPE</span></span></a>';
-const chainBadge = () => '<span class="chain-badge"><img src="assets/sources/bnb-chain.svg" alt="" width="20" height="20"><span><strong>$DOGESCOPE</strong> is live on <strong>BNB Chain</strong></span><span class="chain-live-dot" aria-hidden="true"></span></span>';
+const logoHtml = () => '<a class="logo" href="#/" aria-label="CapyScreen home"><img class="mx-mark" src="icons/capyscreen-64.png?v=43" alt="" width="40" height="40"><span>CAPY<span class="brand-light">SCREEN</span></span></a>';
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const fmtNum = (n) => (n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1) + 'k' : String(n || 0));
@@ -93,7 +92,7 @@ function toast(msg, ms = 2600) {
   el.textContent = msg; el.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), ms);
 }
-async function reload() { state.lib = (await loadLibrary()).filter(isDoge); state.index = buildIndex(state.lib); }
+async function reload() { state.lib = (await loadLibrary()).filter(isCapy); state.index = buildIndex(state.lib); }
 function memeById(id) { return state.lib.find((m) => m.id === id); }
 function allTags() {
   const c = new Map();
@@ -156,11 +155,11 @@ function searchBox({ value = '', autofocus = false, compact = false } = {}) {
   wrap.innerHTML = `
     <div class="searchbox-inner">
       <span class="sb-icon">${I.search}</span>
-      <input type="text" name="q" autocomplete="off" spellcheck="false" aria-label="Search Doge memes" title="Search" placeholder="Search Doge memes, templates, reactions..." value="${esc(value)}" ${autofocus ? 'autofocus' : ''}>
+      <input type="text" name="q" autocomplete="off" spellcheck="false" aria-label="Search Capy memes" title="Search" placeholder="Search Capy memes, templates, reactions..." value="${esc(value)}" ${autofocus ? 'autofocus' : ''}>
       <button type="button" class="sb-btn sb-clear ${value ? '' : 'hidden'}" title="Clear" aria-label="Clear">${I.clear}</button>
       <span class="sb-divider ${value ? '' : 'hidden'}"></span>
       <button type="button" class="sb-btn sb-mic" title="Search by voice" aria-label="Search by voice">${I.mic}</button>
-      <button type="button" class="sb-btn sb-lens" title="Search by image (DogeScope Lens)" aria-label="Search by image">${I.lens}</button>
+      <button type="button" class="sb-btn sb-lens" title="Search by image (CapyScreen Lens)" aria-label="Search by image">${I.lens}</button>
       ${compact ? `<button type="submit" class="sb-btn sb-go" title="Search" aria-label="Search"><span class="sb-icon" style="fill:var(--blue)">${I.search}</span></button>` : ''}
     </div>
     <div class="suggest" role="listbox"></div>`;
@@ -182,7 +181,7 @@ function searchBox({ value = '', autofocus = false, compact = false } = {}) {
     const q = input.value.trim();
     const history = loadHistory();
     const out = []; const seen = new Set();
-    const push = (text, kind, extra = {}) => { if (!isDoge({title:text})) return; const k = text.toLowerCase(); if (seen.has(k) || out.length >= 10) return; seen.add(k); out.push({ text, kind, ...extra }); };
+    const push = (text, kind, extra = {}) => { if (!isCapy({title:text})) return; const k = text.toLowerCase(); if (seen.has(k) || out.length >= 10) return; seen.add(k); out.push({ text, kind, ...extra }); };
     if (!q) {
       history.slice(0, 5).forEach((h) => push(h, 'history'));
       try { const tpl = await fetchImgflip(); if (my !== seq) return; tpl.slice(0, 7).forEach((t) => push(t.title, 'trend')); } catch { /* offline */ }
@@ -259,25 +258,24 @@ function pageHeader() {
     ['Screener', '#/', I.trend, route === 'home' || route === 'search' && p.tab === 'all' && !p.src.length],
     ['My collection', '#/search?tab=library', I.save, p.tab === 'library' && route === 'search'],
     ['Image explorer', '#/search?tab=images', I.image, p.tab === 'images' && route === 'search'],
-    ['Doge GIFs', '#/search?tab=gifs', I.gif, p.tab === 'gifs' && route === 'search'],
+    ['Capy GIFs', '#/search?tab=gifs', I.gif, p.tab === 'gifs' && route === 'search'],
     ['New memes', '#/search?sort=newest', I.history, route === 'search' && p.sort === 'newest'],
     ['Templates', '#/search?tab=templates', I.template, p.tab === 'templates' && route === 'search'],
   ];
-  $('#terminal-chrome').innerHTML = `<header class="dex-mobile-header"><button class="icon-btn" data-action="toggle-menu" title="Open navigation" aria-label="Open navigation">${I.apps}</button>${logoHtml()}<a class="dex-header-social" href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescope_fun</a></header>
+  $('#terminal-chrome').innerHTML = `<header class="dex-mobile-header"><button class="icon-btn" data-action="toggle-menu" title="Open navigation" aria-label="Open navigation">${I.apps}</button>${logoHtml()}<a class="dex-header-social" href="https://x.com/capyscreen_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @capyscreen_fun</a></header>
     <button class="dex-backdrop" data-action="toggle-menu" aria-label="Close navigation"></button>
     <aside class="dex-sidebar" aria-label="Main navigation">
       <div class="dex-brand">${logoHtml()}</div>
-      <button class="dex-search" data-action="focus-search">${sm(I.search,17)}<span>Search Doge memes</span><kbd>/</kbd></button>
+      <button class="dex-search" data-action="focus-search">${sm(I.search,17)}<span>Search Capy memes</span><kbd>/</kbd></button>
       <a class="dex-upload" href="#/search?tab=library">${sm(I.upload,17)} Save your favorites <span>+</span></a>
       <nav>${nav.map(([label,url,icon,active]) => `<a class="dex-nav-link ${active ? 'active' : ''}" href="${url}" ${active ? 'aria-current="page"' : ''}>${sm(icon,18)}${label}</a>`).join('')}</nav>
       <div class="dex-nav-divider"></div><span class="dex-section-label">SOURCES</span>
       <nav>${['lemmy','reddit','bluesky','mastodon','imgflip','tenor','giphy','imgur'].map((key,i)=>`<a class="dex-nav-link ${p.src.includes(key) ? 'active' : ''}" href="${searchUrl({tab:'all',src:key,q:p.q})}"><span class="dex-source-icon source-icon-${key}"><img src="assets/sources/${key}.png" alt="" width="22" height="22"></span>${esc(key === 'imgflip' ? 'Imgflip' : SOURCE_INFO[key].label)}${!enabled(key) ? '<span class="dex-key-label">OFF</span>' : ''}</a>`).join('')}</nav>
       <div class="dex-nav-divider"></div><nav><a class="dex-nav-link" href="#/tags">${sm(I.tag,17)} Tags</a><a class="dex-nav-link" href="#/folders">${sm(I.folder,17)} Folders</a><a class="dex-nav-link" href="#/settings">${sm(I.settings,17)} Settings</a></nav>
-      <div class="dex-sidebar-bottom"><a class="x-social" href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescope_fun</a><small>Such memes. Very Doge.</small></div>
+      <div class="dex-sidebar-bottom"><a class="x-social" href="https://x.com/capyscreen_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @capyscreen_fun</a><small>More capy. Less stress.</small></div>
     </aside>
-    <div class="dex-metas"><a class="dex-header-social" href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @dogescope_fun</a><a class="metas-title" href="#/">${sm(I.apps,14)} Dogeverse</a>${[['Such classics','doge'],['Much Cheems','cheems'],['Very strong','buff doge'],['To the moon','doge moon'],['Wow reactions','doge reaction']].map(([label,q]) => `<a href="${searchUrl({q,tab:'images'})}">${label}<span class="meta-arrow">↗</span></a>`).join('')}</div>`;
-  $('#terminal-chrome').insertAdjacentHTML('beforeend', `<div class="chain-announcement" aria-label="Token announcement">${chainBadge()}</div>`);
-  $('#terminal-footer').innerHTML = `<span class="dex-connection"><img src="icons/dogescope-32.png?v=39" alt="" width="20" height="20"> DOGESCOPE</span><a href="#/search?tab=library">${state.lib.length} collected</a><a href="#/settings#sources">Source settings</a><a href="#/search?tab=templates">Much templates</a><a href="https://x.com/dogescope_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,12)} @dogescope_fun</a>${chainBadge()}`;
+    <div class="dex-metas"><a class="dex-header-social" href="https://x.com/capyscreen_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,14)} @capyscreen_fun</a><a class="metas-title" href="#/">${sm(I.apps,14)} Capyverse</a>${[['Capy classics','capybara'],['Stay chill','capybara chill'],['OK I pull up','capybara pull up'],['Bath time','capybara bath'],['Reactions','capybara reaction']].map(([label,q]) => `<a href="${searchUrl({q,tab:'images'})}">${label}<span class="meta-arrow">↗</span></a>`).join('')}</div>`;
+  $('#terminal-footer').innerHTML = `<span class="dex-connection"><img src="icons/capyscreen-32.png?v=43" alt="" width="20" height="20"> CAPYSCREEN</span><a href="#/search?tab=library">${state.lib.length} collected</a><a href="#/settings#sources">Source settings</a><a href="#/search?tab=templates">Much templates</a><a href="https://x.com/capyscreen_fun" target="_blank" rel="noopener noreferrer">${sm(I.x,12)} @capyscreen_fun</a><span class="dex-footer-end">Stay capy. Stay chill.</span>`;
 }
 
 async function renderHome(app) { return renderResults(app, () => state.route.name !== 'home'); }
@@ -308,15 +306,17 @@ async function libraryAdapter(q, p) {
 }
 
 function adaptersFor(q, p, page = 1) {
-  const curated = DOGE_TEMPLATES.filter(it => !q || relevance(it, tokenize(q), q.toLowerCase()) > 0);
+  if (p.tab === 'library') return page === 1 ? [{source:'library',run:()=>libraryAdapter(q,p)}] : [];
+  const curated = CAPY_SEEDS.filter(it => !q || relevance(it, tokenize(q), q.toLowerCase()) > 0);
   const verified = [{ source: 'imgflip', run: async () => ({ items: curated }) }];
-  const terms = q ? [dogeQuery(q)] : ['doge', 'cheems'];
+  const terms = capySearchTerms(q,page);
   const list = page === 1 ? verified : [];
   for (const term of terms) {
-    if (enabled('lemmy')) list.push({ source: 'lemmy', run: ({onPartial}) => searchLemmy(term, {communities:communities(), sort:p.sort, page, onPartial}) });
+    if (enabled('lemmy') && terms.indexOf(term)<2) list.push({ source: 'lemmy', run: ({onPartial}) => searchLemmy(term, {communities:communities(), sort:p.sort, page, onPartial}) });
     if (enabled('lemmy')) list.push({ source: 'lemmy_global', run: ({onPartial}) => searchLemmyGlobal(term, {sort:p.sort, page, onPartial}) });
-    if (enabled('bluesky')) list.push({ source: 'bluesky', run: ({onPartial, session}) => {
-      const cursor = page > 1 ? session.extra.bluesky?.next || '' : '';
+    const bskySource=`bluesky:${term}`;
+    if (enabled('bluesky')) list.push({ source: bskySource, run: ({onPartial, session}) => {
+      const cursor = page > 1 ? session.extra[bskySource]?.next || '' : '';
       if (page > 1 && !cursor) return {skipped:true};
       return searchBluesky(term, {sort:p.sort, cursor, onPartial});
     } });
@@ -327,7 +327,7 @@ function adaptersFor(q, p, page = 1) {
     if (enabled('imgflip')) list.push({source:'imgflip',run:()=>q ? searchImgflip(q) : fetchImgflip().then(items=>({items}))});
     if (enabled('library')) list.push({source:'library',run:()=>libraryAdapter(q,p)});
   }
-  const term = dogeQuery(q);
+  const term = capyQuery(q);
   if (enabled('tenor')) list.push({source:'tenor',run:({session})=>searchTenor(term,{key:state.settings.tenorKey,safe:p.safe,pos:page>1?session.extra.tenor?.next||'':''})});
   if (enabled('giphy')) list.push({source:'giphy',run:()=>searchGiphy(term,{key:state.settings.giphyKey,safe:p.safe,offset:(page-1)*25})});
   if (enabled('imgur')) list.push({source:'imgur',run:()=>searchImgur(term,{clientId:state.settings.imgurClientId,safe:p.safe,page})});
@@ -335,7 +335,7 @@ function adaptersFor(q, p, page = 1) {
 }
 
 function sessionFor(p) {
-  const key = JSON.stringify([p.q.toLowerCase(), p.sort, p.safe, state.settings.searchMode, p.tags, p.folder]);
+  const key = JSON.stringify([p.q.toLowerCase(), p.sort, p.safe, state.settings.searchMode, p.tags, p.folder, p.tab === 'library']);
   let s = state.sessions.get(key);
   if (s && Date.now() - s.createdAt < 10 * 60000) return s;
   s = createSession(p.q, { sort: p.sort, safe: p.safe }, adaptersFor(p.q, p, 1));
@@ -354,7 +354,7 @@ function sessionFor(p) {
 function registerItems(session) { for (const it of session.items) state.itemsById.set(it.id, it); }
 
 function visibleItems(session, p) {
-  let items = session.items.filter(isDoge);
+  let items = session.items.filter(isCapy);
   if (p.tab === 'images') items = items.filter((i) => i.kind !== 'template' || p.q);
   else if (p.tab === 'gifs') items = items.filter((i) => i.kind === 'gif');
   else if (p.tab === 'templates') items = items.filter((i) => i.kind === 'template');
@@ -373,7 +373,7 @@ async function renderResults(app, isStale) {
   const tabs = [['all', 'Discover', I.trend], ['images', 'Images', I.image], ['gifs', 'GIFs', I.gif], ['templates', 'Templates', I.template], ['library', 'My library', I.save]];
   app.innerHTML = `
     <header class="results-top">
-      <section class="doge-hero"><div class="doge-hero-copy"><span class="doge-kicker">THE INTERNET’S GOOD BOY, SCREENED.</span><h2>Such memes.<br>Much <em>wow.</em></h2><p>Your little corner of the Dogeverse.<br>Discover, save and share. Only Doge. Always.</p><a class="doge-cta" href="#/search?tab=images">Explore Doge memes <span>↗</span></a><div class="doge-hero-note"><span>Ð</span> Do Only Good Everyday.</div></div><div class="doge-hero-art"><span class="doge-orbit"></span><span class="doge-float float-one">wow.</span><span class="doge-float float-two">much golden</span><img src="assets/dogescope/dogescope-gradient-logo.png" alt="DogeScope mascot" width="620" height="620"><span class="doge-sticker">100% DOGE<br><small>very approved ✓</small></span></div></section><div class="page-heading"><div><span class="eyebrow">YOUR DAILY DOSE OF DOGE</span><h1>${p.tab === 'library' ? 'My library' : p.q ? 'Search results' : 'The Doge feed'} <span class="live-label"><i></i> ${p.tab === 'library' ? 'LOCAL LIBRARY' : 'DOGE ONLY'}</span></h1><p>${p.q ? `Results for “${esc(p.q)}”` : 'Classic Doge, Cheems and much more. Such a good feed.'}</p></div><div class="workspace-actions"><a class="quiet-link" href="#/search?tab=library">${sm(I.save)} My library</a><a class="gbtn primary" href="#/search?tab=library">${sm(I.upload)} My collection</a></div></div>
+      <section class="doge-hero"><div class="doge-hero-copy"><span class="doge-kicker">THE INTERNET’S CHILLEST CORNER.</span><h2>Less chaos.<br>More <em>capy.</em></h2><p>Welcome to your capy comfort zone.<br>Discover, save and share. Only Capy. Always.</p><a class="doge-cta" href="#/search?tab=images">Explore Capy memes <span>↗</span></a><div class="doge-hero-note"><span>✦</span> Good memes. Zero rush.</div></div><div class="doge-hero-art"><span class="doge-orbit"></span><span class="doge-float float-one">OK, I pull up.</span><span class="doge-float float-two">stay chill</span><img src="assets/capy/capyscreen-logo.png" alt="CapyScreen mascot" width="620" height="620"><span class="doge-sticker">100% CAPY<br><small>very approved ✓</small></span></div></section><div class="page-heading"><div><span class="eyebrow">YOUR DAILY DOSE OF CAPY</span><h1>${p.tab === 'library' ? 'My library' : p.q ? 'Search results' : 'The Capy feed'} <span class="live-label"><i></i> ${p.tab === 'library' ? 'LOCAL LIBRARY' : 'CAPY ONLY'}</span></h1><p>${p.q ? `Results for “${esc(p.q)}”` : 'Capybara memes, cozy reactions and a seriously chill feed.'}</p></div><div class="workspace-actions"><a class="quiet-link" href="#/search?tab=library">${sm(I.save)} My library</a><a class="gbtn primary" href="#/search?tab=library">${sm(I.upload)} My collection</a></div></div>
       <div class="command-row"><span class="command-prefix">${sm(I.search,18)}</span><div id="sb"></div><span class="command-hint"><kbd>/</kbd> Search</span></div>
       <nav class="tabs">
         ${tabs.map(([k, label, icon]) => `<a class="tab ${p.tab === k ? 'active' : ''}" href="${searchUrl({ ...state.route.params, tab: k, id: undefined, sel: undefined })}">${icon}${label}</a>`).join('')}
@@ -414,7 +414,7 @@ function statusLine(session, p, items) {
   const errors = Object.entries(session.status).filter(([k, v]) => !k.includes(':') && v === 'error').map(([k]) => SOURCE_INFO[k]?.label || k);
   const secs = (session.elapsed / 1000).toFixed(2);
   let txt;
-  if (!p.q) txt = session.done ? `${items.length} ${p.tab === 'library' ? 'memes in your collection' : 'Doge memes and templates'}` : 'Fetching Doge templates...';
+  if (!p.q) txt = session.done ? `${items.length} ${p.tab === 'library' ? 'memes in your collection' : 'Capy memes and templates'}` : 'Fetching Capy templates...';
   else txt = session.done ? `About ${items.length} result${items.length === 1 ? '' : 's'} (${secs} seconds)` : `${items.length} results so far, searching ${loading.join(', ') || '...'}`;
   return `<div class="result-stats">${txt}${errors.length ? ` <span title="These sources did not respond">· ${errors.join(', ')} unavailable</span>` : ''}${session.done ? '' : ' <span class="spinner"></span>'}</div>`;
 }
@@ -433,7 +433,7 @@ function renderBody(root, session, p) {
   else parts.push(imageGrid(shown, p));
 
   if (items.length > shown.length) parts.push(`<div class="more"><button class="gbtn" data-action="more">More results (${items.length - shown.length} more loaded)</button></div>`);
-  else if (p.q && session.done && p.tab !== 'library' && p.tab !== 'templates' && (enabled('lemmy') || enabled('bluesky') || enabled('tenor') || enabled('giphy') || enabled('imgur')) && session.page < 5) parts.push(`<div class="more"><button class="gbtn" data-action="load-more">Load more from the web</button></div>`);
+  else if (session.done && p.tab !== 'library' && p.tab !== 'templates' && (enabled('lemmy') || enabled('bluesky') || enabled('tenor') || enabled('giphy') || enabled('imgur')) && session.page < 5) parts.push(`<div class="more"><button class="gbtn" data-action="load-more">Discover more capy memes</button></div>`);
   root.innerHTML = parts.join('');
   if (p.q && session.done && items.length < 3 && state.settings.googleSuggest) {
     spellCorrection(p.q, { lang: lang() }).then((c) => {
@@ -451,7 +451,7 @@ function emptyState(p, session) {
   const noSources = !Object.keys(SOURCE_INFO).some(enabled);
   const st = session ? Object.entries(session.status).filter(([k]) => !k.includes(':')) : [];
   const allFailed = st.length > 0 && st.every(([, v]) => v === 'error' || v === 'skipped');
-  if (allFailed) return `<div class="empty">DogeScope could not reach any source.
+  if (allFailed) return `<div class="empty">CapyScreen could not reach any source.
     <div style="margin-top:12px">The browser blocked or failed every request to the meme sources (lemmy.world, meme-api.com, api.imgflip.com, mastodon.social).
     This happens with strict content blockers, privacy modes or network filters. Allow those hosts or try another browser, then
     <a href="javascript:location.reload()">reload</a>.</div></div>`;
@@ -460,15 +460,15 @@ function emptyState(p, session) {
     <div style="margin-top:12px">Suggestions:</div>
     <ul>
       ${noSources ? '<li>All sources are disabled. Enable some in <a href="#/settings#sources">Settings</a>.</li>' : ''}
-      ${p.tab === 'gifs' ? '<li>No curated Doge GIFs yet. Explore the Doge image templates.</li>' : ''}
+      ${p.tab === 'gifs' ? '<li>No capy GIFs match this search. Try capybara, chill or bath.</li>' : ''}
       ${p.tab === 'library' ? '<li><a href="#/search?tab=library">My collections</a> or save results from the web with the Save button.</li>' : '<li>Try different or more general keywords, or the name of the meme template.</li>'}
       ${p.tab !== 'all' ? `<li>Look at <a href="${searchUrl({ ...state.route.params, tab: 'all' })}">all result types</a>.</li>` : ''}
-      <li>DogeScope only shows Doge content. Try Doge, Cheems, buff or classic.</li>
+      <li>CapyScreen only shows Capy content. Try capybara, chill, bath or pull up.</li>
     </ul></div>`;
 }
 
 function moreSourcesLinks(q) {
-  q = dogeQuery(q);
+  q = capyQuery(q);
   const e = encodeURIComponent(q);
   return [
     `<a href="https://knowyourmeme.com/search?q=${e}" target="_blank" rel="noopener">Know Your Meme</a>`,
@@ -486,7 +486,7 @@ function renderAll(session, p, items, shown) {
   if (!rows.length) return session.done ? emptyState(p, session) : skeletonGrid();
   const sources = new Set(items.map((it) => it.source)).size;
   const social = items.reduce((n, it) => n + (it.source === 'imgflip' || it.source === 'library' ? 0 : Number(it.score) || 0), 0);
-  return `<div class="dex-market-stats"><div><span>DOGE MEMES IN THIS FEED:</span><strong>${items.length.toLocaleString()}</strong><small>${sources} sources</small></div><div><span>MUCH DOGE. VERY WOW:</span><strong>100% Doge</strong><small>${state.lib.length} collected</small></div></div>
+  return `<div class="dex-market-stats"><div><span>CAPY MEMES IN THIS FEED:</span><strong>${items.length.toLocaleString()}</strong><small>${sources} sources</small></div><div><span>CAPY CONTENT. ONLY:</span><strong>100% Capy</strong><small>${state.lib.length} collected</small></div></div>
     <div class="dex-feed-toolbar"><div><a href="${searchUrl({...state.route.params,sort:'relevance'})}" class="dex-filter ${p.sort === 'relevance' ? 'selected' : ''}">${sm(I.trend,13)} Trending</a><a href="${searchUrl({...state.route.params,sort:'top'})}" class="dex-filter ${p.sort === 'top' ? 'selected' : ''}">${sm(I.arrowUp,13)} Top score</a><a href="${searchUrl({...state.route.params,sort:'newest'})}" class="dex-filter ${p.sort === 'newest' ? 'selected' : ''}">${sm(I.history,13)} New memes</a><a class="dex-filter" href="#/search?tab=library">${sm(I.save,13)} Collection</a></div><span class="dex-feed-state"><i></i>${localFallback ? 'LOCAL PREVIEW' : session.done ? 'FEED LOADED' : 'UPDATING'}</span></div>
     <div class="terminal-table-wrap"><table class="terminal-table"><thead><tr><th class="rank-col">#</th><th>MEME</th><th>SOURCE</th><th>SCORE <span>↓</span></th><th>COMMENTS</th><th>TYPE</th><th>AGE</th><th class="action-col">EXPLORE</th></tr></thead><tbody>${rows.map((it, i) => {
       state.itemsById.set(it.id, it);
@@ -790,7 +790,7 @@ function renderUpload(app) {
 }
 
 async function handleFiles(files) {
-  toast('DogeScope accepts curated Doge content only. Save a Doge from the feed.'); return;
+  toast('CapyScreen accepts curated Capy content only. Save a Capy from the feed.'); return;
 
   files = files.filter((f) => /^image\/(jpeg|png|webp|gif)$/.test(f.type));
   if (!files.length) { toast('No supported images (JPG, PNG, WEBP, GIF)'); return; }
@@ -953,13 +953,13 @@ async function renderSettings(app) {
 
       <h2 id="about">About</h2>
       <div class="card" style="line-height:1.6">
-        <p style="margin:0 0 8px"><b>DogeScope</b> is your meme discovery screener: a meme-only search engine that runs entirely in your browser and is hosted as a static site.
+        <p style="margin:0 0 8px"><b>CapyScreen</b> is your meme discovery screener: a meme-only search engine that runs entirely in your browser and is hosted as a static site.
         Use of third-party software and bundled media is described in the project license notices.</p>
         <p id="how" style="margin:0 0 8px"><b>How Search works.</b> Your query goes in parallel to the meme communities on Lemmy (searched through lemmy.world and the communities' own instances),
         to hot posts of meme subreddits via meme-api.com, to the Imgflip template list and, with your own keys, to Tenor, Giphy and Imgur. Results are merged, de-duplicated and ranked
         by title match, upvotes and freshness. Suggestions and "Did you mean" come live from Google's suggest service. The knowledge panel is the matching Wikipedia article.
         My memes are searched locally with BM25 or sentence embeddings.</p>
-        <p id="privacy" style="margin:0"><b>Privacy.</b> No analytics, no accounts, no DogeScope server. Queries are sent to the sources above (and to Google's suggest endpoint if enabled).
+        <p id="privacy" style="margin:0"><b>Privacy.</b> No analytics, no accounts, no CapyScreen server. Queries are sent to the sources above (and to Google's suggest endpoint if enabled).
         Uploads stay in this browser. See the project documentation for source and license notices.</p>
       </div>
     </main>`;
@@ -1156,7 +1156,7 @@ async function render(force = false) {
   terminalChrome();
   if (state.route.name !== 'search') state.limit = 0;
   const p = state.route.params;
-  document.title = 'DogeScope';
+  document.title = 'CapyScreen';
   const prevScroll = window.scrollY;
   // only the open panel changed: patch instead of re-rendering the whole page
   if (!force && state.route.name === 'search' && prev.name === 'search' && $('#results-body') && sameExcept(prev.params, p, ['id'])) {

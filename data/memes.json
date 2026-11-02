@@ -1,36 +1,72 @@
 {
-  "version": 2,
-  "count": 2,
+  "count": 4,
+  "version": 3,
   "memes": [
     {
-      "id": "doge-classic",
-      "path": "assets/doge/classic-doge.jpg",
-      "filename": "Doge.jpg",
-      "folder": "Doge classics",
-      "width": 620,
-      "height": 620,
-      "description": "The original Doge. Such wow. Kabosu the Shiba Inu.",
+      "filename": "capy-1.png",
+      "originalImage": "https://lemmy.world/pictrs/image/caa51936-4436-401d-b758-162692758db4.png",
+      "path": "assets/capy/capy-1.png",
+      "sourceUrl": "https://lemmy.world/post/15072612",
+      "id": "capy-seed-1",
+      "folder": "Capy classics",
+      "text": "",
+      "title": "Wholesome capybaras are friends with everyone",
+      "description": "Wholesome capybaras are friends with everyone",
       "tags": [
-        "doge",
-        "classic",
-        "wow",
-        "reaction"
+        "capybara",
+        "capy",
+        "meme"
       ],
       "source": "bundled"
     },
     {
-      "id": "doge-cheems",
-      "path": "assets/doge/buff-doge-cheems.png",
-      "filename": "Buff_Doge_vs_Cheems.png",
-      "folder": "Doge classics",
-      "width": 937,
-      "height": 720,
-      "description": "Buff Doge vs. Cheems comparison meme.",
+      "filename": "capy-2.jpeg",
+      "originalImage": "https://lemmy.world/pictrs/image/5201f61f-2e8a-4284-9980-496c6800dd49.jpeg",
+      "path": "assets/capy/capy-2.jpeg",
+      "sourceUrl": "https://lemmy.world/post/42175412",
+      "id": "capy-seed-2",
+      "folder": "Capy classics",
+      "text": "",
+      "title": "Capybara love",
+      "description": "Capybara love",
       "tags": [
-        "doge",
-        "cheems",
-        "buff",
-        "comparison"
+        "capybara",
+        "capy",
+        "meme"
+      ],
+      "source": "bundled"
+    },
+    {
+      "filename": "capy-3.webp",
+      "originalImage": "https://lemmy.dbzer0.com/pictrs/image/2ce83119-bffd-48d4-9e29-a2c46443af15.webp",
+      "path": "assets/capy/capy-3.webp",
+      "sourceUrl": "https://lemmy.dbzer0.com/post/73447303",
+      "id": "capy-seed-3",
+      "folder": "Capy classics",
+      "text": "",
+      "title": "Capybaras rule",
+      "description": "Capybaras rule",
+      "tags": [
+        "capybara",
+        "capy",
+        "meme"
+      ],
+      "source": "bundled"
+    },
+    {
+      "filename": "capy-4.webp",
+      "originalImage": "https://lemmy.dbzer0.com/pictrs/image/282683e5-9026-4e15-ac1c-6349952f8344.webp",
+      "path": "assets/capy/capy-4.webp",
+      "sourceUrl": "https://lemmy.dbzer0.com/post/66239842",
+      "id": "capy-seed-4",
+      "folder": "Capy classics",
+      "text": "cross-posted from: https://lemmy.dbzer0.com/post/66239841 Capybara birthday cake",
+      "title": "Capybara birthday cake rule",
+      "description": "Capybara birthday cake rule",
+      "tags": [
+        "capybara",
+        "capy",
+        "meme"
       ],
       "source": "bundled"
     }

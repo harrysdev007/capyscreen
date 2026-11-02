@@ -1,8 +1,8 @@
 // Memegle storage: bundled index (data/memes.json) + IndexedDB for uploads, edits and embeddings.
-const DB_NAME = 'dogescreen';
+const DB_NAME = 'capyscreen';
 const DB_VERSION = 1;
-const SETTINGS_KEY = 'dogescreen.settings';
-const HISTORY_KEY = 'dogescreen.history';
+const SETTINGS_KEY = 'capyscreen.settings';
+const HISTORY_KEY = 'capyscreen.history';
 
 export const DEFAULT_SETTINGS = {
   theme: 'dark',            // system | light | dark
@@ -118,7 +118,7 @@ export async function loadLibrary() {
     lib.push({
       ...m,
       url: encodeURI(m.path),
-      title: titleFromFilename(m.filename),
+      title: m.title || titleFromFilename(m.filename),
       description: o.description ?? m.description ?? '',
       text: o.text ?? m.text ?? '',
       tags: o.tags ?? m.tags ?? [],
